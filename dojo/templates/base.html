@@ -385,6 +385,9 @@
                             {% if system_settings.enable_jira and "dojo.view_jira_instance"|has_configuration_permission:request %}
                                 <a href="{% url 'jira' %}" class="block py-1.5 ps-12 pe-4 text-sm">{% trans "JIRA" %}</a>
                             {% endif %}
+                            {% if system_settings.enable_linear and "dojo.view_linear_instance"|has_configuration_permission:request %}{# LINEAR-FORK #}
+                                <a href="{% url 'linear' %}" class="block py-1.5 ps-12 pe-4 text-sm">{% trans "Linear" %}</a>
+                            {% endif %}
                             {% if "dojo.change_bannerconf"|has_configuration_permission:request %}
                                 <a href="{% url 'configure_banner' %}" class="block py-1.5 ps-12 pe-4 text-sm">{% trans "Login Banner" %}</a>
                             {% endif %}
@@ -825,6 +828,14 @@
                                                                 {% trans "Edit" %}
                                                             </a>
                                                         </li>
+                                                        {% if system_settings.enable_linear %}{# LINEAR-FORK #}
+                                                        <li role="presentation">
+                                                            <a href="{% url 'product_linear_config' product_tab.product.id %}">
+                                                                <i class="fa-solid fa-link"></i>
+                                                                {% trans "Linear Settings" %}
+                                                            </a>
+                                                        </li>
+                                                        {% endif %}
                                                         <li role="separator" class="divider"></li>
                                                         <li role="presentation">
                                                             <a href="{% url 'add_meta_data' product_tab.product.id %}">

@@ -50,6 +50,8 @@ from dojo.finding_group.urls import urlpatterns as finding_group_urls
 from dojo.github.ui.urls import urlpatterns as github_urls
 from dojo.home.urls import urlpatterns as home_urls
 from dojo.jira.urls import urlpatterns as jira_urls
+from dojo.linear.api.views import LinearLinkView, LinearPushView  # LINEAR-FORK
+from dojo.linear.ui.urls import urlpatterns as linear_urls  # LINEAR-FORK
 from dojo.location.api.endpoint_compat import V3EndpointCompatibleViewSet, V3EndpointStatusCompatibleViewSet
 from dojo.location.api.urls import add_locations_urls
 from dojo.metrics.urls import urlpatterns as metrics_urls
@@ -183,6 +185,7 @@ ur += test_urls
 ur += user_urls
 ur += jira_urls
 ur += github_urls
+ur += linear_urls  # LINEAR-FORK
 ur += tool_type_urls
 ur += tool_config_urls
 ur += tool_product_urls
@@ -214,6 +217,9 @@ api_v2_urls = [
     re_path(r"^{}api/v2/".format(get_system_setting("url_prefix")), include(v2_api.urls)),
     re_path(r"^{}api/v2/user_profile/".format(get_system_setting("url_prefix")), UserProfileView.as_view(), name="user_profile"),
     re_path(r"^{}api/v2/api-tokens/revoke/$".format(get_system_setting("url_prefix")), RevokeApiTokenView.as_view(), name="api-token-revoke"),
+    # LINEAR-FORK
+    re_path(r"^{}api/v2/linear/push/$".format(get_system_setting("url_prefix")), LinearPushView.as_view(), name="api-linear-push"),
+    re_path(r"^{}api/v2/linear/link/$".format(get_system_setting("url_prefix")), LinearLinkView.as_view(), name="api-linear-link"),
 ]
 
 if hasattr(settings, "API_TOKENS_ENABLED") and hasattr(settings, "API_TOKEN_AUTH_ENDPOINT_ENABLED"):

@@ -495,6 +495,13 @@ from dojo.jira.models import (  # noqa: E402,F401 backward compat
     JIRA_Issue,
     JIRA_Project,
 )
+from dojo.linear.models import (  # noqa: E402, F401 -- LINEAR-FORK re-export
+    Linear_Baseline,
+    Linear_Finding_Link,
+    Linear_Instance,
+    Linear_Issue,
+    Linear_Product_Config,
+)
 from dojo.notifications.admin import NotificationsAdmin  # noqa: E402, F401  -- backward compat
 from dojo.notifications.models import (  # noqa: E402, F401  -- backward compat
     DEFAULT_NOTIFICATION,

@@ -1,0 +1,36 @@
+{% load i18n %}
+{# LINEAR-FORK: Linear panel on the finding page. #}
+{% if linear.show %}
+<div class="panel panel-default" id="linear-panel">
+    <div class="panel-heading"><h4><i class="fa-solid fa-link" aria-hidden="true"></i> Linear</h4></div>
+    <div class="panel-body">
+        {% if linear.link %}
+            <p>{% trans "Linked to" %} <a href="{{ linear.link.issue.url }}" target="_blank" rel="noopener noreferrer"><b>{{ linear.link.issue.identifier }}</b></a>
+               {% if linear.others %}({% blocktrans count n=linear.others %}with {{ n }} other finding{% plural %}with {{ n }} other findings{% endblocktrans %}){% endif %}</p>
+            {% if linear.can_edit %}
+            <form method="post" action="{% url 'finding_linear_action' finding.id 'repush' %}" style="display:inline" onsubmit="return confirm('{% trans 'Overwrite the Linear title, description and priority with the current DefectDojo content?' %}');">{% csrf_token %}
+                <button class="btn btn-sm btn-default" type="submit"><i class="fa-solid fa-share-from-square"></i> {% trans "Re-push content" %}</button>
+            </form>
+            <form method="post" action="{% url 'finding_linear_action' finding.id 'unlink' %}" style="display:inline" onsubmit="return confirm('{% trans 'Unlink this finding from the Linear issue? The issue itself is left alone.' %}');">{% csrf_token %}
+                <button class="btn btn-sm btn-default" type="submit"><i class="fa-solid fa-link-slash"></i> {% trans "Unlink from Linear" %}</button>
+            </form>
+            {% endif %}
+        {% else %}
+            {% if linear.waiting %}
+                <div class="alert alert-warning">{% blocktrans with tag=linear.config.push_tag reason=linear.waiting %}Tagged "{{ tag }}", waiting: the finding is {{ reason }}. The Linear issue is created once it is eligible.{% endblocktrans %}</div>
+            {% elif linear.baselined %}
+                <p class="text-muted">{% trans "This finding was already tagged before Linear was enabled, so DefectDojo ignores it (its issue was made by hand)." %}</p>
+            {% endif %}
+            {% if linear.can_edit %}
+            <form method="post" action="{% url 'finding_linear_action' finding.id 'push' %}" style="display:inline" onsubmit="return confirm('{% trans 'Create a Linear issue for this finding?' %}');">{% csrf_token %}
+                <button class="btn btn-sm btn-primary" type="submit"><i class="fa-solid fa-plus"></i> {% trans "Push to Linear" %}</button>
+            </form>
+            <form method="post" action="{% url 'finding_linear_action' finding.id 'link' %}" class="form-inline" style="display:inline" onsubmit="return confirm('{% trans 'Link this finding to that existing Linear issue?' %}');">{% csrf_token %}
+                <input type="text" name="identifier" class="form-control input-sm" placeholder="SEC-42" required/>
+                <button class="btn btn-sm btn-default" type="submit"><i class="fa-solid fa-link"></i> {% trans "Link to existing Linear issue" %}</button>
+            </form>
+            {% endif %}
+        {% endif %}
+    </div>
+</div>
+{% endif %}

@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% block content %}
+    {{ block.super }}
+    {# LINEAR-FORK #}
+    <h3>{% blocktrans with name=instance.name %}Delete Linear connection "{{ name }}"?{% endblocktrans %}</h3>
+    <p>{% trans "Only possible when no product uses it and no issue is linked through it. Nothing is changed in Linear." %}</p>
+    <form method="post">{% csrf_token %}
+        {{ form.id }}
+        <input class="btn btn-danger" type="submit" value="{% trans 'Delete' %}"/>
+        <a class="btn btn-default" href="{% url 'linear' %}">{% trans "Cancel" %}</a>
+    </form>
+{% endblock %}

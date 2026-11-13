@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% load authorization_tags %}
+{% block content %}
+    {{ block.super }}
+    {# LINEAR-FORK #}
+    <div class="row">
+        <div class="col-md-12">
+            <div class="panel panel-default">
+                <div class="panel-heading tight">
+                    <h3 class="has-filters">
+                        <i class="fa-solid fa-link dd-card-icon" aria-hidden="true"></i>{% trans "Linear connections" %}
+                        {% if "dojo.add_linear_instance"|has_configuration_permission:request %}
+                            <a href="{% url 'add_linear' %}" class="btn btn-primary btn-sm pull-right"><i class="fa-solid fa-plus"></i> {% trans "Add Linear connection" %}</a>
+                        {% endif %}
+                    </h3>
+                </div>
+            </div>
+            {% if not system_settings.enable_linear %}
+                <p class="text-center text-warning">{% trans "The Linear integration is disabled in System Settings." %}</p>
+            {% endif %}
+            {% if instances %}
+                <div class="panel panel-default table-responsive">
+                    <table class="table table-condensed table-striped">
+                        <thead><tr><th>{% trans "Name" %}</th><th>{% trans "Workspace" %}</th><th>{% trans "Auth" %}</th><th></th></tr></thead>
+                        <tbody>
+                        {% for instance in instances %}
+                            <tr>
+                                <td>{{ instance.name }}</td>
+                                <td>{{ instance.workspace_name }}</td>
+                                <td>{{ instance.get_auth_type_display }}</td>
+                                <td class="text-right">
+                                    {% if "dojo.change_linear_instance"|has_configuration_permission:request %}
+                                        <a href="{% url 'edit_linear' instance.id %}" class="btn btn-sm btn-default"><i class="fa-solid fa-pen-to-square"></i> {% trans "Edit" %}</a>
+                                    {% endif %}
+                                    {% if "dojo.delete_linear_instance"|has_configuration_permission:request %}
+                                        <a href="{% url 'delete_linear' instance.id %}" class="btn btn-sm btn-danger"><i class="fa-solid fa-trash" style="color:white"></i> {% trans "Delete" %}</a>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            {% else %}
+                <p class="text-center">{% trans "No Linear connections found." %}</p>
+            {% endif %}
+        </div>
+    </div>
+{% endblock %}

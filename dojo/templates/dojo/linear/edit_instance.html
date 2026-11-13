@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% block content %}
+    {{ block.super }}
+    {# LINEAR-FORK #}
+    <h3>{% if instance.pk %}{% trans "Edit Linear connection" %}{% else %}{% trans "Add a Linear connection" %}{% endif %}</h3>
+    <p class="text-muted">{% trans "Saving runs a connection test against Linear. The key is stored encrypted and never shown again." %}</p>
+    <form class="form-horizontal" method="post">{% csrf_token %}
+        {% include "dojo/form_fields.html" with form=form %}
+        <div class="form-group">
+            <div class="col-sm-offset-2 col-sm-10">
+                <input class="btn btn-primary" type="submit" value="{% trans 'Test and save' %}"/>
+            </div>
+        </div>
+    </form>
+{% endblock %}

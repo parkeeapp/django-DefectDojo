@@ -2957,6 +2957,9 @@ def finding_bulk_update_all(request, pid=None):
                 logger.debug("bulk_edit: adding tags to %d findings: %s", finds.count(), tags)
                 # Delegate parsing and handling of strings/iterables to helper
                 bulk_add_tags_to_instances(tag_or_tags=tags, instances=finds, tag_field_name="tags")
+                # LINEAR-FORK: bulk tagging skips save(), so run the Linear tag trigger here.
+                from dojo.linear import services as linear_services  # noqa: PLC0415 -- lazy import, avoids circular dependency
+                linear_services.sync_findings_if_needed(finds)
 
             _bulk_push_to_jira(finds, form, note)
 

@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% block content %}
+    {{ block.super }}
+    {# LINEAR-FORK #}
+    <h3>{% blocktrans with name=product.name %}Linear settings for {{ name }}{% endblocktrans %}</h3>
+    {% if not linear_enabled %}
+        <div class="alert alert-warning">{% trans "The Linear integration is disabled in System Settings. Nothing is pushed until it is enabled there." %}</div>
+    {% endif %}
+    {% if not has_instances %}
+        <div class="alert alert-warning">{% trans "Add a Linear connection first (Configuration > Linear)." %}</div>
+    {% endif %}
+    <div class="alert alert-info">
+        {% blocktrans %}A verified finding tagged with the push tag gets its own Linear issue. To put several findings on one issue, use the Linear actions in Bulk Edit instead of tagging. After an issue exists, only its status is synced.{% endblocktrans %}
+        {% if baseline_preview is not None %}
+            <br/><b>{% blocktrans count n=baseline_preview %}{{ n }} finding already carries the push tag and will be ignored when you enable this (its issue was made by hand).{% plural %}{{ n }} findings already carry the push tag and will be ignored when you enable this (their issues were made by hand).{% endblocktrans %}</b>
+        {% endif %}
+        {% if baseline_count is not None %}
+            <br/>{% blocktrans count n=baseline_count %}{{ n }} finding was already tagged when Linear was enabled and is ignored.{% plural %}{{ n }} findings were already tagged when Linear was enabled and are ignored.{% endblocktrans %}
+        {% endif %}
+    </div>
+    <form class="form-horizontal" method="post">{% csrf_token %}
+        {% include "dojo/form_fields.html" with form=form %}
+        <div class="form-group">
+            <div class="col-sm-offset-2 col-sm-10">
+                <input class="btn btn-default" type="submit" name="refresh" value="{% trans 'Load teams, states and labels from Linear' %}"/>
+                <input class="btn btn-primary" type="submit" value="{% trans 'Save' %}"/>
+            </div>
+        </div>
+    </form>
+{% endblock %}
