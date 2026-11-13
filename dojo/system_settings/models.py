@@ -62,6 +62,12 @@ class System_Settings(models.Model):
                                       verbose_name=_("Enable GITHUB integration"),
                                       blank=False)
 
+    # LINEAR-FORK: feature flag for the Linear integration (dojo/linear/).
+    enable_linear = models.BooleanField(default=False,
+                                      verbose_name=_("Enable Linear integration"),
+                                      help_text=_("Push findings to Linear issues. Configure a Linear connection and enable it per product."),
+                                      blank=False)
+
     enable_slack_notifications = \
         models.BooleanField(default=False,
                             verbose_name=_("Enable Slack notifications"),

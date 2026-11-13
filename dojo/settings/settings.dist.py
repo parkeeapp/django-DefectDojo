@@ -1024,7 +1024,7 @@ if env("DD_CELERY_TASK_DEFAULT_EXPIRES") > 0:
 if len(env("DD_CELERY_BROKER_TRANSPORT_OPTIONS")) > 0:
     CELERY_BROKER_TRANSPORT_OPTIONS = json.loads(env("DD_CELERY_BROKER_TRANSPORT_OPTIONS"))
 
-CELERY_IMPORTS = ("dojo.tools.tool_issue_updater", )
+CELERY_IMPORTS = ("dojo.tools.tool_issue_updater", "dojo.linear.tasks")  # LINEAR-FORK: dojo.linear.tasks
 
 # Watson async index update settings
 WATSON_ASYNC_INDEX_UPDATE_BATCH_SIZE = env("DD_WATSON_ASYNC_INDEX_UPDATE_BATCH_SIZE")

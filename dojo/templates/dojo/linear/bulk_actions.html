@@ -1,0 +1,39 @@
+{% load i18n %}
+{# LINEAR-FORK: several findings -> one Linear issue. Sits after the Bulk Edit form (no nested forms). #}
+{% if system_settings.enable_linear %}
+<form action="{% url 'linear_bulk_action' %}" method="post" id="linear_bulk_form" style="margin-top: .8em; border-top: 1px solid #ddd; padding-top: .5em">{% csrf_token %}
+    <input type="hidden" name="return_url" value="{{ request.get_full_path }}"/>
+    <label style="display: block"><b>{% trans "Linear: several findings, one issue" %}</b></label>
+    <label style="font-size: 80%; font-weight: normal; display: block">
+        <input type="radio" name="linear_action" value="create" checked/> {% trans "Create one Linear issue from selected" %}
+    </label>
+    <input type="text" name="title" class="form-control" placeholder="{% trans 'Issue title (optional)' %}" style="font-size: 90%; margin-bottom: .3em"/>
+    <label style="font-size: 80%; font-weight: normal; display: block">
+        <input type="radio" name="linear_action" value="link"/> {% trans "Link to existing Linear issue" %}
+    </label>
+    <input type="text" name="identifier" class="form-control" placeholder="SEC-42" style="font-size: 90%; margin-bottom: .3em"/>
+    <input type="submit" class="btn btn-sm btn-default" value="{% trans 'Send to Linear' %}"/>
+</form>
+<script>
+    (function () {
+        var form = document.getElementById('linear_bulk_form');
+        if (!form) { return; }
+        form.addEventListener('submit', function (e) {
+            var checked = document.querySelectorAll('input[type=checkbox].select_one:checked');
+            if (!checked.length) { alert('{% trans "Select at least one finding." %}'); e.preventDefault(); return; }
+            var action = form.querySelector('input[name=linear_action]:checked').value;
+            if (action === 'link' && !form.querySelector('input[name=identifier]').value.trim()) {
+                alert('{% trans "Enter the Linear issue id, e.g. SEC-42." %}'); e.preventDefault(); return;
+            }
+            var msg = action === 'create' ? '{% trans "Create ONE Linear issue for the selected findings?" %}' : '{% trans "Link the selected findings to that Linear issue?" %}';
+            if (!confirm(msg)) { e.preventDefault(); return; }
+            form.querySelectorAll('input[name=finding_to_update]').forEach(function (el) { el.remove(); });
+            checked.forEach(function (box) {
+                var input = document.createElement('input');
+                input.type = 'hidden'; input.name = 'finding_to_update'; input.value = box.id;
+                form.appendChild(input);
+            });
+        });
+    })();
+</script>
+{% endif %}

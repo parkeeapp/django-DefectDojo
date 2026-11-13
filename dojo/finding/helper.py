@@ -499,6 +499,10 @@ def post_process_finding_save_internal(finding, dedupe_option=True, rules_option
         elif finding.finding_group:
             jira_services.push(finding.finding_group)
 
+    # LINEAR-FORK: tag trigger + status sync. Returns at once when Linear is disabled; never raises.
+    from dojo.linear import services as linear_services  # noqa: PLC0415 -- lazy import, avoids circular dependency
+    linear_services.sync_if_needed(finding)
+
 
 # post_process_findings_batch runs the status-changing dedup / false-positive-history
 # writes for a batch of findings. Two of these tasks racing on overlapping dojo_finding
@@ -677,6 +681,10 @@ def finding_delete(instance, *, push_to_jira=DELETE_JIRA_SYNC_UNSET, **kwargs):
         and jira_services.is_delete_sync_allowed(instance, push_to_jira=push_to_jira)
     ):
         jira_services.close_issue_for_deleted_finding(instance, push_to_jira=push_to_jira)
+
+    # LINEAR-FORK: re-sync the Linear issue once this finding is gone. Never raises.
+    from dojo.linear import services as linear_services  # noqa: PLC0415 -- lazy import, avoids circular dependency
+    linear_services.on_finding_deleted(instance)
 
     # this shouldn't be necessary as Django should remove any Many-To-Many entries automatically, might be a bug in Django?
     # https://code.djangoproject.com/ticket/154

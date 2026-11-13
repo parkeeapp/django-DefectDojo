@@ -5,6 +5,7 @@
 {% load humanize %}
 {% load static %}
 {% load i18n %}
+{% load linear_tags %}
 
 {% block add_styles %}
     {{ block.super }}
@@ -554,6 +555,7 @@
         </div>
         {% endif %}
     {% endif %}
+    {% linear_finding_panel finding %}{# LINEAR-FORK #}
     {% if finding.service or finding.file_path or finding.line > 0 or finding.has_jira_configured or finding.has_jira_issue or finding.github_issue or finding.github_conf_new or finding.finding_group or finding.component_name or finding.nb_occurences > 1 %}
     <div class="panel panel-default">
         <table id="error_notes" class="table-striped table table-condensed table-hover centered">
